@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title></title>
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<script src="js/jquery-1.11.3.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/wangyi.js"></script>
+	<style>
+		.navbar{
+			background: black;
+		}
+		.search{
+			margin-left: 500px;
+			text-align: center;
+			width: 500px;
+			position: relative;
+		}
+		#choose{
+			position: absolute;
+			left: 6px;
+			top: 43px;
+			width: 277px;
+			border: 1px solid gray;
+			display: none;
+			background: white;
+			z-index: 1000;
+		}
+		#inp{
+			margin-left: auto;
+			float: left;
+			padding: 10px 100px 10px 10px;
+			border: 2px solid gray;
+			border-top-left-radius: 10px;
+			border-bottom-left-radius: 10px;
+			outline: none;
+		}
+		#btn{
+			margin-left: -2px;
+			float: left;
+			padding: 10px;
+			border: 2px solid gray;
+			border-top-right-radius: 10px;
+			border-bottom-right-radius: 10px;
+			outline: none;
+		}
+		.wrapper{
+			margin-top: 100px;
+			margin-left: auto;
+			margin-right: auto;
+			width: 1000px;
+		}
+		.wrapper ul{
+			overflow: hidden;
+			margin: 0;
+			margin-right: -25px;
+			margin-bottom: 100px;
+			padding: 0;
+			cursor: pointer;
+		}
+		.wrapper li{
+			float: left;
+			margin-bottom: 20px;
+			margin-right: 25px;
+			width: 180px;
+			height: 250px;
+			list-style-type: none;
+		}
+		.wrapper li img{
+			width: 100%;
+			height: 80%;
+		}
+		.music{
+			position: fixed;
+			bottom: 0;
+			left: 175px;
+			width: 1000px;
+			height: 50px;
+			background: gray;
+		}
+		#audio{
+			margin-left: 20px;
+			margin-top: 10px;
+			width: 80%;
+		}
+		video{
+			margin-left: 200px;
+			margin-top: 50px;
+			display: none;
+		}
+	</style>
+</head>
+<body>
+	<nav class="navbar navbar-default">
+	  <div class="container">
+	    <!-- Brand and toggle get grouped for better mobile display -->
+	    <div class="navbar-header">
+	      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+	        <span class="sr-only">Toggle navigation</span>
+	        <span class="icon-bar"></span>
+	        <span class="icon-bar"></span>
+	        <span class="icon-bar"></span>
+	      </button>
+	      <a class="navbar-brand" href="#" style="font-size: 30px;font-weight: 700">网易</a>
+	    </div>
+
+	    <!-- Collect the nav links, forms, and other content for toggling -->
+	    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+	      <ul class="nav navbar-nav">
+	        <li><a href="#">发现音乐 <span class="sr-only">(current)</span></a></li>
+	        <li><a href="#">我的音乐</a></li>
+	        <li><a href="#">朋友</a></li>
+	        <li><a href="#">商城</a></li>
+	        <li><a href="#">音乐人</a></li>
+	        <li><a href="#">下载客户端</a></li>
+	      </ul>
+	      <div class="navbar-right"> 	
+		      <form class="navbar-form navbar-left">
+		        <div class="form-group" style="border: 1px solid #ccc;background: #fff">
+		          <input type="text" class="form-control" placeholder="童话镇" style="line-height: 50px;border:0;border-radius: 0">
+		        </div>
+		      </form>
+		      <ul class="nav navbar-nav navbar-right">
+		        <li><a href="#" class="icon-jinlingyingcaiwangtubiao12" style="font-family: 'iconfont';font-size: 20px"></a></li>
+		        <li class="dropdown">
+		          <a href="#" class="dropdown-toggle icon-cehua" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" style="font-family: 'iconfont';font-size: 20px"></a>
+		          <ul class="dropdown-menu">
+		            <li><a href="#">Action</a></li>
+		            <li><a href="#">Another action</a></li>
+		            <li><a href="#">Something else here</a></li>
+		            <li role="separator" class="divider"></li>
+		            <li><a href="#">Separated link</a></li>
+		          </ul>
+		        </li>
+		      </ul>
+	      </div>
+	    </div><!-- /.navbar-collapse -->
+	  </div><!-- /.container-fluid -->
+	</nav>
+
+	<div class="search">
+		<input type="text" id="inp" placeholder="童话镇">
+		<button id="btn">搜索</button>
+		<div id="choose"></div>
+	</div>
+
+	<video src="" controls autoplay></video>
+
+	<div class="wrapper">
+		<ul id="lists">
+			<li><img src="images/1.jpg" alt="">
+				<p class="info">
+					<span>陈一发</span>
+					<br/>	
+					<span>童话镇</span>
+				</p>
+			</li>
+			<li><img src="images/1.jpg" alt="">
+				<p class="info">
+					<span>陈一发</span>
+					<br/>	
+					<span>童话镇</span>
+				</p>
+			</li>
+			<li><img src="images/1.jpg" alt="">
+				<p class="info">
+					<span>陈一发</span>
+					<br/>	
+					<span>童话镇</span>
+				</p>
+			</li>
+			<li><img src="images/1.jpg" alt="">
+				<p class="info">
+					<span>陈一发</span>
+					<br/>	
+					<span>童话镇</span>
+				</p>
+			</li>
+			<li><img src="images/1.jpg" alt="">
+				<p class="info">
+					<span>陈一发</span>
+					<br/>	
+					<span>童话镇</span>
+				</p>
+			</li>
+		</ul>
+	</div>
+	<div class="music">	
+		<audio controls autoplay id="audio"></audio>
+	</div>
+</body>
+</html>
