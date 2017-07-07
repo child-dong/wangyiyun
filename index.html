@@ -14,7 +14,8 @@
 			background: black;
 		}
 		.search{
-			margin-left: 500px;
+			margin-top: 50px;
+			margin-left: 300px;
 			text-align: center;
 			width: 500px;
 			position: relative;
@@ -27,7 +28,10 @@
 			border: 1px solid gray;
 			display: none;
 			background: white;
-			z-index: 1000;
+			z-index: 1001;
+		}
+		#choose p:hover{
+			background: #ccc;
 		}
 		#inp{
 			margin-left: auto;
@@ -48,10 +52,9 @@
 			outline: none;
 		}
 		.wrapper{
-			margin-top: 100px;
-			margin-left: auto;
-			margin-right: auto;
-			width: 1000px;
+			margin-top: 150px;
+			margin-left: 150px;	
+			width: 615px;
 		}
 		.wrapper ul{
 			overflow: hidden;
@@ -72,24 +75,92 @@
 		.wrapper li img{
 			width: 100%;
 			height: 80%;
+			border-radius: 10px;
+			border: 2px solid #ccc;
+			margin-bottom: 10px;
+		}
+		.wrapper li span{
+			line-height: 15px;
 		}
 		.music{
 			position: fixed;
-			bottom: 0;
-			left: 175px;
-			width: 1000px;
-			height: 50px;
-			background: gray;
+			bottom: 10px;
+			right: 50px;
+			width: 500px;
+			height: 450px;
+			background: rgba(8,8,8,0.7);
+			border-radius: 10px;
+			/* background-image: url('images/2.jpg'); */
+			background-size: 500px 450px;
+		}
+		#lyric{
+			margin: 0 auto;
+			height: 150px;
+			padding-top: 30px;
+			text-align: center;
+			overflow: hidden;
+		}
+		#lyric p{
+			font-size: 25px;
+			color: pink;
+			letter-spacing: 10px;
 		}
 		#audio{
-			margin-left: 20px;
-			margin-top: 10px;
+			float: left;
+			margin-left: 50px;
+			margin-top: 20px;
 			width: 80%;
 		}
+		#pic{
+			height: 200px;
+		}
+		#pic img{
+			margin-left: 150px;
+			margin-top: -50px;
+			width: 200px;
+			height: 100%;
+			border-radius: 50%;
+		}
+		@keyframes imag{
+			0%{
+				transform: rotateZ(0);
+			}
+			100%{
+				transform: rotateZ(360deg);
+			}
+		}
 		video{
-			margin-left: 200px;
-			margin-top: 50px;
+			margin-top: 10px;
+			width: 100%;
 			display: none;
+		}
+		#music-title{
+			box-sizing: border-box;
+			float: left;
+			padding-left: 50px;
+			padding-top: 20px;
+			height: 40px;
+			font-size: 14px;
+			line-height: 15px;
+			color: #fff;
+			overflow: hidden;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+			animation: hrl 5s ease-in infinite;
+		}
+		.color{
+			color: pink;
+		}
+		@keyframes hrl {
+			0%{
+				padding-left: 50px;
+			}
+			50%{
+				padding-left: 75px;
+			}
+			100%{
+				padding-left: 50px;
+			}
 		}
 	</style>
 </head>
@@ -99,28 +170,28 @@
 	    <!-- Brand and toggle get grouped for better mobile display -->
 	    <div class="navbar-header">
 	      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-	        <span class="sr-only">Toggle navigation</span>
+	        <span class="sr-only"">Toggle navigation</span>
 	        <span class="icon-bar"></span>
 	        <span class="icon-bar"></span>
 	        <span class="icon-bar"></span>
 	      </button>
-	      <a class="navbar-brand" href="#" style="font-size: 30px;font-weight: 700">网易</a>
+	      <a class="navbar-brand" href="#" style="font-size: 30px;font-weight: 700;color:#fff">网易</a>
 	    </div>
 
 	    <!-- Collect the nav links, forms, and other content for toggling -->
 	    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 	      <ul class="nav navbar-nav">
-	        <li><a href="#">发现音乐 <span class="sr-only">(current)</span></a></li>
-	        <li><a href="#">我的音乐</a></li>
-	        <li><a href="#">朋友</a></li>
-	        <li><a href="#">商城</a></li>
-	        <li><a href="#">音乐人</a></li>
-	        <li><a href="#">下载客户端</a></li>
+	        <li><a href="#" style="color:#fff">发现音乐 <span class="sr-only">(current)</span></a></li>
+	        <li><a href="#" style="color:#fff">我的音乐</a></li>
+	        <li><a href="#" style="color:#fff">朋友</a></li>
+	        <li><a href="#" style="color:#fff">商城</a></li>
+	        <li><a href="#" style="color:#fff">音乐人</a></li>
+	        <li><a href="#" style="color:#fff">下载客户端</a></li>
 	      </ul>
 	      <div class="navbar-right"> 	
 		      <form class="navbar-form navbar-left">
 		        <div class="form-group" style="border: 1px solid #ccc;background: #fff">
-		          <input type="text" class="form-control" placeholder="童话镇" style="line-height: 50px;border:0;border-radius: 0">
+		          <input type="text" class="form-control" style="line-height: 50px;border:0">
 		        </div>
 		      </form>
 		      <ul class="nav navbar-nav navbar-right">
@@ -142,13 +213,11 @@
 	</nav>
 
 	<div class="search">
-		<input type="text" id="inp" placeholder="童话镇">
+		<input type="text" id="inp" placeholder="童话镇" autocomplete="off">
 		<button id="btn">搜索</button>
 		<div id="choose"></div>
 	</div>
-
-	<video src="" controls autoplay></video>
-
+	<!-- <video src="" controls autoplay></video> -->	
 	<div class="wrapper">
 		<ul id="lists">
 			<li><img src="images/1.jpg" alt="">
@@ -189,7 +258,11 @@
 		</ul>
 	</div>
 	<div class="music">	
+		<video src="" controls autoplay></video>
+		<div id="lyric"></div>
+		<div id="pic"></div>
 		<audio controls autoplay id="audio"></audio>
+		<div id="music-title"></div>
 	</div>
 </body>
 </html>
