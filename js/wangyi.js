@@ -186,11 +186,10 @@ window.onload = function(){
 					var time = null;
 					time = setInterval(function(){		
 						if(audi.paused){
-							img.style.animation = "imag 8s linear infinite paused";
-							lyric.innerHTML = "";
+							img.style.animation = "imag 25s linear infinite paused";
 						}
 						else if(!audi.paused){
-							img.style.animation = "imag 8s linear infinite";
+							img.style.animation = "imag 25s linear infinite";
 						}
 					},30)
 				}
