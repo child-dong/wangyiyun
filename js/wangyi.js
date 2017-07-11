@@ -26,12 +26,13 @@ function ajax(option){
 	}
 }
 
-
 window.onload = function(){
 
 	var btn = document.getElementById('btn');
 	var inp = document.getElementById('inp');
 	var oUl = document.getElementById('lists');
+	var aLi = oUl.getElementsByTagName('li');
+	var iMg = oUl.getElementsByTagName('img');
 	var audi = document.getElementById('audio');
 	var vide = document.getElementsByTagName('video')[0];
 	var choose = document.getElementById('choose');
@@ -40,7 +41,6 @@ window.onload = function(){
 	var auPic = document.getElementById('pic');
 
 	function pic(data){
-		oUl.innerHTML = "";
 		for(var i = 0; i < data.result.songs.length; i++){
 			var li = document.createElement('li');
 			li.style.position = 'relative';
@@ -82,13 +82,27 @@ window.onload = function(){
 			li.appendChild(singer)
 
 			oUl.appendChild(li);
-		}
+		}		
 	}
 
+
+	oUl.innerHTML = "";
 	ajax({
-		url:'https://api.imjad.cn/cloudmusic/?type=search&s=说散就散',
+		url:'https://api.imjad.cn/cloudmusic/?type=search&limit=15&s='+inp.value,
 		success:pic
 	})
+
+	var off = 0;
+	window.onscroll = function(){
+		off++;
+		if(aLi[aLi.length-1].offsetTop - document.body.scrollTop <= 280 && aLi[aLi.length-1].offsetTop - document.body.scrollTop>=270){
+			ajax({
+				url:'https://api.imjad.cn/cloudmusic/?type=search&limit=15&offset='+off+'&s='+inp.value,
+				success: pic
+			})
+			return false
+		}
+	}
 
 	inp.onkeyup = function(){
 		var reg = /[\u4e00-\u9fa5]/;
@@ -125,9 +139,9 @@ window.onload = function(){
 		if(inp.value == ""){
 			return false;
 		}
-		
+		oUl.innerHTML = "";
 		ajax({
-			url:'https://api.imjad.cn/cloudmusic/?type=search&s='+inp.value,
+			url:'https://api.imjad.cn/cloudmusic/?type=search&limit=15&s='+inp.value,
 			success:pic
 		})
 	}
@@ -139,9 +153,9 @@ window.onload = function(){
 			if(inp.value == ""){
 				return false;
 			}
-			
+			oUl.innerHTML = "";
 			ajax({
-				url:'https://api.imjad.cn/cloudmusic/?type=search&s='+inp.value,
+				url:'https://api.imjad.cn/cloudmusic/?type=search&limit=15&s='+inp.value,
 				success:pic
 			})
 		}
@@ -182,6 +196,40 @@ window.onload = function(){
 					var img = document.createElement('img');
 					img.src = target.getAttribute("src");
 					auPic.appendChild(img);
+
+					audi.onended = function(){
+						auPic.innerHTML = "";
+						ajax({
+							url:'https://api.imjad.cn/cloudmusic/?type=song&id='+target.parentNode.nextSibling.childNodes[0].getAttribute("data-id")+"&br=128000",
+							success:function (data){
+								audi.setAttribute('src', data.data[0].url);
+								musicTitle.innerHTML = "";
+
+								var span = document.createElement('span');
+								span.innerHTML = target.parentNode.nextSibling.childNodes[0].getAttribute('title')+" - ";
+								musicTitle.appendChild(span);
+
+								var span = document.createElement('span');
+								span.innerHTML = target.parentNode.nextSibling.childNodes[0].getAttribute('singer');
+								musicTitle.appendChild(span);
+
+								var img = document.createElement('img');
+								img.src = target.parentNode.nextSibling.childNodes[0].getAttribute("src");
+								auPic.appendChild(img);
+								target = target.parentNode.nextSibling.childNodes[0];
+
+								var time = null;
+								time = setInterval(function(){		
+									if(audi.paused){
+										img.style.animation = "imag 25s linear infinite paused";
+									}
+									else if(!audi.paused){
+										img.style.animation = "imag 25s linear infinite";
+									}
+								},30)
+							}
+						})
+					}
 
 					var time = null;
 					time = setInterval(function(){		
