@@ -39,6 +39,7 @@ window.onload = function(){
 	var lyric = document.getElementById('lyric');
 	var musicTitle = document.getElementById('music-title');
 	var auPic = document.getElementById('pic');
+	var lyrics = document.getElementById('lyrics'); 
 
 	function pic(data){
 		for(var i = 0; i < data.result.songs.length; i++){
@@ -94,8 +95,9 @@ window.onload = function(){
 
 	var off = 0;
 	window.onscroll = function(){
+		// console.log(aLi[aLi.length-1].offsetTop)
 		off++;
-		if(aLi[aLi.length-1].offsetTop - document.body.scrollTop <= 280 && aLi[aLi.length-1].offsetTop - document.body.scrollTop>=270){
+		if(aLi[aLi.length-1].offsetTop - document.body.scrollTop <= 320 && aLi[aLi.length-1].offsetTop - document.body.scrollTop>=300){
 			ajax({
 				url:'https://api.imjad.cn/cloudmusic/?type=search&limit=15&offset='+off+'&s='+inp.value,
 				success: pic
@@ -161,12 +163,15 @@ window.onload = function(){
 		}
 	}
 
+
+	var timer = null;
 	oUl.onclick = function(e){
+		clearInterval(timer);
+		lyrics.innerHTML = "";
 
 		var eve = e||window.event;
 		var target = eve.srcElement||eve.target;
 		if(target.nodeName.toLowerCase() == 'img'){
-
 			audi.currentTime = 0;
 			audi.play();
 			vide.pause();
@@ -197,39 +202,116 @@ window.onload = function(){
 					img.src = target.getAttribute("src");
 					auPic.appendChild(img);
 
-					audi.onended = function(){
-						auPic.innerHTML = "";
-						ajax({
-							url:'https://api.imjad.cn/cloudmusic/?type=song&id='+target.parentNode.nextSibling.childNodes[0].getAttribute("data-id")+"&br=128000",
-							success:function (data){
-								audi.setAttribute('src', data.data[0].url);
-								musicTitle.innerHTML = "";
+						audi.onended = function(){
+							auPic.innerHTML = "";
+							lyrics.innerHTML = "";
+							ajax({
+								url:'https://api.imjad.cn/cloudmusic/?type=song&id='+target.parentNode.nextSibling.childNodes[0].getAttribute("data-id")+"&br=128000",
+								success:function (data){
 
-								var span = document.createElement('span');
-								span.innerHTML = target.parentNode.nextSibling.childNodes[0].getAttribute('title')+" - ";
-								musicTitle.appendChild(span);
+									audi.setAttribute('src', data.data[0].url);
+									musicTitle.innerHTML = "";
 
-								var span = document.createElement('span');
-								span.innerHTML = target.parentNode.nextSibling.childNodes[0].getAttribute('singer');
-								musicTitle.appendChild(span);
+									var span = document.createElement('span');
+									span.innerHTML = target.getAttribute('title')+" - ";
+									musicTitle.appendChild(span);
 
-								var img = document.createElement('img');
-								img.src = target.parentNode.nextSibling.childNodes[0].getAttribute("src");
-								auPic.appendChild(img);
-								target = target.parentNode.nextSibling.childNodes[0];
+									var span = document.createElement('span');
+									span.innerHTML = target.getAttribute('singer');
+									musicTitle.appendChild(span);
 
-								var time = null;
-								time = setInterval(function(){		
-									if(audi.paused){
-										img.style.animation = "imag 25s linear infinite paused";
+									var img = document.createElement('img');
+									img.src = target.getAttribute("src");
+									auPic.appendChild(img);
+
+									var time = null;
+									time = setInterval(function(){		
+										if(audi.paused){
+											img.style.animation = "imag 25s linear infinite paused";
+										}
+										else if(!audi.paused){
+											img.style.animation = "imag 25s linear infinite";
+										}
+									},30)
+								}
+							})
+
+							target = target.parentNode.nextSibling.childNodes[0];
+
+							clearInterval(timer)
+							ajax({
+								url:'https://api.imjad.cn/cloudmusic/?type=lyric&id='+target.getAttribute("data-id")+"&br=128000",
+								success:function (data){
+									
+									var lyc = JSON.stringify(data.lrc.lyric);
+
+									var aLyric = [];
+									var reg = /\[\d{2}:\d{2}.\d{1,3}\]/g;
+									var reg2 = /"|\[\d{2}:\d{2}.\d{1,3}\]/g;
+
+									aLyric = lyc.split(/\\n/g);
+
+									var aTime = [];
+									var aLyic = [];
+
+									for(var i=0;i<aLyric.length-1;i++){
+									 	aTime.push(aLyric[i].match(reg));
+									 	aLyic.push(aLyric[i].replace(reg2, ''));
 									}
-									else if(!audi.paused){
-										img.style.animation = "imag 25s linear infinite";
+
+
+
+									aLyric = [];
+									aTime.forEach( function(arr, index) {
+										var arr2;
+										if(arr != null){
+											arr2 = arr.toString();							
+										}else{
+											arr2 = "[00:00:00]";
+										}
+										var time1 = arr2.slice(1, -1).split(':');
+										aLyric.push([parseInt(time1[0], 10) * 60 + parseFloat(time1[1]), aLyic[index]])
+									})
+									// console.log(aLyric)
+									for(var i=0;i<aLyric.length;i++){
+										var p = document.createElement('p');
+										p.innerText = aLyric[i][1];	
+										lyrics.appendChild(p)
 									}
-								},30)
-							}
-						})
-					}
+									var pLyc = lyric.getElementsByTagName('p');
+									var index = null;
+									// var timer = null;
+									var m = null
+									audio.ontimeupdate = function(){
+										for(var i=0;i<aLyric.length;i++){
+											if(parseInt(this.currentTime) === parseInt(aLyric[i][0])){
+												index = i;
+												var j = 0;
+												if(i>=1){
+													var j = i -1;
+												}
+				          		 	pLyc[i].style.color = "yellow";
+				          		 	pLyc[j].style.color = "#fff";
+				          		 	pLyc[i].style.transform = "scale(1.2)";
+          		 					pLyc[j].style.transform = "scale(1)";
+												clearInterval(timer);
+				                timer = setInterval(function(){
+				                  m += 1;
+				                  if(m >= index * 27){
+				                      clearInterval(timer);
+				                  }else{
+				                      lyrics.style.top = "-" + m + "px";
+				                  }
+				                },10);
+											}
+										}
+									}
+								}
+							})	
+							
+						}
+
+	
 
 					var time = null;
 					time = setInterval(function(){		
@@ -247,40 +329,13 @@ window.onload = function(){
 				url:'https://api.imjad.cn/cloudmusic/?type=lyric&id='+target.getAttribute("data-id")+"&br=128000",
 				success:function (data){
 	
-					// var lyc = data.lrc.lyric;
-
-					// var reg = /\n/g;
-					// var lyic = lyc.replace(reg,"")
-
-					// var reg1 = /\[\d{2}:\d{2}.\d{2,3}\]/g;
-					// var lyc1 = lyic.replace(reg1,'n')
-					// var lycs = lyc1.split('n');
-					// lycs.shift();
-					// console.log(lycs);
-
-					// var reg2 = /\d{2}\d{2}\d{2,3}/g;
-					// var lyc3 = lyic.replace(/[dd:dd.dd]/g,"");
-					// var times = lyc3.match(reg2);
-					// console.log(times)
-					
-					// audi.ontimeupdate = function (argument) {
-					// 	console.log(this.currentTime);
-
-					// 	console.log(parseInt(this.currentTime))
-					// 	if(times[0] = argument[0].currentTime){
-					// 		lyric.innerHTML = lycs[0]
-					// 	}
-					// }
-
-
 					var lyc = JSON.stringify(data.lrc.lyric);
 
 					var aLyric = [];
 					var reg = /\[\d{2}:\d{2}.\d{1,3}\]/g;
 					var reg2 = /"|\[\d{2}:\d{2}.\d{1,3}\]/g;
 
-					var aLyric = lyc.split(/\\n/g);
-
+					aLyric = lyc.split(/\\n/g);
 					var aTime = [];
 					var aLyic = [];
 
@@ -289,8 +344,7 @@ window.onload = function(){
 					 	aLyic.push(aLyric[i].replace(reg2, ''));
 					}
 
-
-
+					aLyric = [];
 					aTime.forEach( function(arr, index) {
 						var arr2;
 						if(arr != null){
@@ -301,17 +355,48 @@ window.onload = function(){
 						var time1 = arr2.slice(1, -1).split(':');
 						aLyric.push([parseInt(time1[0], 10) * 60 + parseFloat(time1[1]), aLyic[index]])
 					})
-
+					// console.log(aLyric)
+					for(var i=0;i<aLyric.length;i++){
+						var p = document.createElement('p');
+						p.innerText = aLyric[i][1];	
+						lyrics.appendChild(p)
+					}
+					var pLyc = lyric.getElementsByTagName('p');
+					var index = null;
+					// var timer = null;
+					var m = null
 					audio.ontimeupdate = function(){
 						for(var i=0;i<aLyric.length;i++){
 							if(parseInt(this.currentTime) === parseInt(aLyric[i][0])){
-								lyric.innerHTML = '';
-								var p = document.createElement('p');
-								p.innerText = aLyric[i][1];
-								lyric.appendChild(p)
+								index = i;
+								var j = 0;
+								if(i>=1){
+									var j = i -1;
+								}
+          		 	pLyc[i].style.color = "yellow";
+          		 	pLyc[i].style.transform = "scale(1.2)";
+          		 	pLyc[j].style.transform = "scale(1)";
+          		 	pLyc[j].style.color = "#fff";
+								clearInterval(timer);
+                timer = setInterval(function(){
+                  m += 1;
+                  if(audi.ended){
+                  	clearInterval(timer);
+                  	lyrics.innerHTML = "";
+                  	return false;
+                  }
+                  if(m >= index * 27){
+                      clearInterval(timer);
+                  }
+                  else{
+                    lyrics.style.top = "-" + m + "px";
+                  }
+                },10);
 							}
 						}
 					}
+
+
 				}
 			})
 		}
