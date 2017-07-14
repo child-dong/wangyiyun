@@ -83,7 +83,7 @@ window.onload = function(){
 			li.appendChild(singer)
 
 			oUl.appendChild(li);
-		}		
+		}	
 	}
 
 
@@ -95,14 +95,18 @@ window.onload = function(){
 
 	var off = 0;
 	window.onscroll = function(){
-		// console.log(aLi[aLi.length-1].offsetTop)
-		off++;
-		if(aLi[aLi.length-1].offsetTop - document.body.scrollTop <= 320 && aLi[aLi.length-1].offsetTop - document.body.scrollTop>=300){
-			ajax({
-				url:'https://api.imjad.cn/cloudmusic/?type=search&limit=15&offset='+off+'&s='+inp.value,
-				success: pic
-			})
-			return false
+		var more = document.getElementById('more');
+		more.style.display = "block";	
+			off++;
+		if(aLi[aLi.length-1].offsetTop - document.body.scrollTop <= 260){
+			setTimeout(function(){
+				ajax({
+					url:'https://api.imjad.cn/cloudmusic/?type=search&limit=15&offset='+off+'&s='+inp.value,
+					success: pic
+				})	
+				more.style.display = "none";	
+				return false;
+			}, 2000)
 		}
 	}
 
@@ -166,7 +170,7 @@ window.onload = function(){
 
 	var timer = null;
 	oUl.onclick = function(e){
-		clearInterval(timer);
+		// clearInterval(timer);
 		lyrics.innerHTML = "";
 
 		var eve = e||window.event;
@@ -238,11 +242,10 @@ window.onload = function(){
 
 							target = target.parentNode.nextSibling.childNodes[0];
 
-							clearInterval(timer)
+							// clearInterval(timer)
 							ajax({
 								url:'https://api.imjad.cn/cloudmusic/?type=lyric&id='+target.getAttribute("data-id")+"&br=128000",
 								success:function (data){
-									
 									var lyc = JSON.stringify(data.lrc.lyric);
 
 									var aLyric = [];
@@ -282,27 +285,31 @@ window.onload = function(){
 									var index = null;
 									// var timer = null;
 									var m = null
-									audio.ontimeupdate = function(){
+									audi.ontimeupdate = function(){
 										for(var i=0;i<aLyric.length;i++){
-											if(parseInt(this.currentTime) === parseInt(aLyric[i][0])){
+											if(parseInt(this.currentTime) >= parseInt(aLyric[i][0])){
 												index = i;
-												var j = 0;
-												if(i>=1){
-													var j = i -1;
-												}
-				          		 	pLyc[i].style.color = "yellow";
-				          		 	pLyc[j].style.color = "#fff";
+
+												for(var z=0;z<aLyric.length;z++){
+													pLyc[z].style.color = "#fff";
+													pLyc[z].style.transform = "scale(1)";
+												}											
+
+				          		 	pLyc[i].style.color = "yellow";			          		 	
 				          		 	pLyc[i].style.transform = "scale(1.2)";
-          		 					pLyc[j].style.transform = "scale(1)";
-												clearInterval(timer);
-				                timer = setInterval(function(){
-				                  m += 1;
-				                  if(m >= index * 27){
-				                      clearInterval(timer);
-				                  }else{
-				                      lyrics.style.top = "-" + m + "px";
-				                  }
-				                },10);
+          		 				
+
+          		 					lyrics.style.top = "-" + 30*index + "px";
+												// clearInterval(timer);
+
+				        //         timer = setInterval(function(){
+				        //           m += 1;
+				        //           if(m >= index * 27){
+				        //               clearInterval(timer);
+				        //           }else{
+				        //               lyrics.style.top = "-" + m + "px";	
+				        //           }
+				        //         },10);
 											}
 										}
 									}
@@ -328,7 +335,6 @@ window.onload = function(){
 			ajax({
 				url:'https://api.imjad.cn/cloudmusic/?type=lyric&id='+target.getAttribute("data-id")+"&br=128000",
 				success:function (data){
-	
 					var lyc = JSON.stringify(data.lrc.lyric);
 
 					var aLyric = [];
@@ -356,47 +362,51 @@ window.onload = function(){
 						aLyric.push([parseInt(time1[0], 10) * 60 + parseFloat(time1[1]), aLyic[index]])
 					})
 					// console.log(aLyric)
-					for(var i=0;i<aLyric.length;i++){
-						var p = document.createElement('p');
-						p.innerText = aLyric[i][1];	
-						lyrics.appendChild(p)
+					for(var i=0;i<aLyric.length;i++){					
+							var p = document.createElement('p');
+							p.innerText = aLyric[i][1];	
+							lyrics.appendChild(p)
 					}
 					var pLyc = lyric.getElementsByTagName('p');
 					var index = null;
 					// var timer = null;
-					var m = null
-					audio.ontimeupdate = function(){
-						for(var i=0;i<aLyric.length;i++){
-							if(parseInt(this.currentTime) === parseInt(aLyric[i][0])){
+					// var m = null;
+					audi.ontimeupdate = function(){
+						for(var i=0;i<pLyc.length;i++){
+							if(this.currentTime >= aLyric[i][0]){
 								index = i;
-								var j = 0;
-								if(i>=1){
-									var j = i -1;
+
+								for(var z=0;z<pLyc.length;z++){
+									pLyc[z].style.color = "#fff";
+									pLyc[z].style.transform = "scale(1)";
 								}
-          		 	pLyc[i].style.color = "yellow";
+								
+								pLyc[i].style.color = "yellow";
           		 	pLyc[i].style.transform = "scale(1.2)";
-          		 	pLyc[j].style.transform = "scale(1)";
-          		 	pLyc[j].style.color = "#fff";
-								clearInterval(timer);
-                timer = setInterval(function(){
-                  m += 1;
-                  if(audi.ended){
-                  	clearInterval(timer);
-                  	lyrics.innerHTML = "";
-                  	return false;
-                  }
-                  if(m >= index * 27){
-                      clearInterval(timer);
-                  }
-                  else{
-                    lyrics.style.top = "-" + m + "px";
-                  }
-                },10);
-							}
+								lyrics.style.top = "-" + 30*index + "px";
+
+								
+
+
+
+								// clearInterval(timer);
+                // timer = setInterval(function(){
+                //   m += 1;
+                //   if(audi.ended){
+                //   	clearInterval(timer);
+                //   	lyrics.innerHTML = "";
+                //   	return false;
+                //   }
+                //   if(m >= index * 27){
+                //       clearInterval(timer);
+                //   }
+                //   else{
+                //     lyrics.style.top = "-" + m + "px";
+                //   }
+                // },10);
+							}								
 						}
 					}
-
-
 				}
 			})
 		}
@@ -405,6 +415,7 @@ window.onload = function(){
 			audi.pause();
 			audi.currentTime = 0;
 			lyric.style.display = "none";
+			lyrics.innerHTML = "";
 			audi.style.display = "none";
 			musicTitle.innerHTML = "";
 			auPic.innerHTML = "";
