@@ -93,22 +93,39 @@ window.onload = function(){
 		success:pic
 	})
 
-	var off = 0;
+	// var off = 0;
+	// window.onscroll = function(){
+	// 	var more = document.getElementById('more');
+	// 	more.style.display = "block";	
+	// 		off++;
+	// 	if(aLi[aLi.length-1].offsetTop - document.body.scrollTop <= 260){
+	// 		setTimeout(function(){
+	// 			ajax({
+	// 				url:'https://api.imjad.cn/cloudmusic/?type=search&limit=15&offset='+off+'&s='+inp.value,
+	// 				success: pic
+	// 			})	
+	// 			more.style.display = "none";	
+	// 			return false;
+	// 		}, 2000)
+	// 	}
+	// }s
 	window.onscroll = function(){
-		var more = document.getElementById('more');
-		more.style.display = "block";	
-			off++;
-		if(aLi[aLi.length-1].offsetTop - document.body.scrollTop <= 260){
-			setTimeout(function(){
-				ajax({
-					url:'https://api.imjad.cn/cloudmusic/?type=search&limit=15&offset='+off+'&s='+inp.value,
-					success: pic
-				})	
-				more.style.display = "none";	
-				return false;
-			}, 2000)
+		if(aLi[aLi.length-1].offsetTop - document.body.scrollTop <= 320){
+			more.style.display = "block";	
 		}
+	}	
+	var off = 0;
+	more.onclick = function(){
+		var more = document.getElementById('more');
+		off++;
+		ajax({
+			url:'https://api.imjad.cn/cloudmusic/?type=search&limit=15&offset='+off+'&s='+inp.value,
+			success: pic
+		})	
+		more.style.display = "none";	
 	}
+
+
 
 	inp.onkeyup = function(){
 		var reg = /[\u4e00-\u9fa5]/;
@@ -171,11 +188,12 @@ window.onload = function(){
 	var timer = null;
 	oUl.onclick = function(e){
 		// clearInterval(timer);
-		lyrics.innerHTML = "";
+		
 
 		var eve = e||window.event;
 		var target = eve.srcElement||eve.target;
 		if(target.nodeName.toLowerCase() == 'img'){
+			lyrics.innerHTML = "";
 			audi.currentTime = 0;
 			audi.play();
 			vide.pause();
